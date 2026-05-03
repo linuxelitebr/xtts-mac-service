@@ -24,8 +24,10 @@
         <!-- Without this, Python prints only hit the log when the buffer fills -->
         <key>PYTHONUNBUFFERED</key>
         <string>1</string>
+        <!-- /opt/homebrew/bin first because gr.make_waveform shells out to ffmpeg
+             and Apple Silicon Homebrew lives there. Without it, predict() crashes. -->
         <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
     </dict>
 
     <key>RunAtLoad</key>
