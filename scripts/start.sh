@@ -29,7 +29,7 @@ warn() { printf "  \033[33m!\033[0m %s\n" "$*" >&2; }
 fail() { printf "  \033[31m✗\033[0m %s\n" "$*" >&2; }
 
 http_up() { curl -fsS -o /dev/null --max-time 2 "http://127.0.0.1:$PORT/" 2>/dev/null; }
-is_loaded() { launchctl list | grep -q "$SERVICE_LABEL"; }
+is_loaded() { launchctl list 2>/dev/null | grep -F "$SERVICE_LABEL" >/dev/null; }
 has_pid() {
     local pid
     pid=$(launchctl list | awk -v lbl="$SERVICE_LABEL" '$3==lbl {print $1}')

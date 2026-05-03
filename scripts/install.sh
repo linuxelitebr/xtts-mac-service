@@ -73,7 +73,7 @@ sed \
 ok "plist generated: $PLIST_TARGET"
 
 bold "==> Loading the LaunchAgent"
-if launchctl list | grep -q "$SERVICE_LABEL"; then
+if launchctl list 2>/dev/null | grep -F "$SERVICE_LABEL" >/dev/null; then
     launchctl unload "$PLIST_TARGET" 2>/dev/null || true
     ok "old version unloaded"
 fi

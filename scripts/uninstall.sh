@@ -19,7 +19,7 @@ ok()   { printf "  \033[32m✓\033[0m %s\n" "$*"; }
 warn() { printf "  \033[33m!\033[0m %s\n" "$*" >&2; }
 
 if [ -f "$PLIST_TARGET" ]; then
-    if launchctl list | grep -q "$SERVICE_LABEL"; then
+    if launchctl list 2>/dev/null | grep -F "$SERVICE_LABEL" >/dev/null; then
         launchctl unload "$PLIST_TARGET"
         ok "LaunchAgent unloaded"
     fi

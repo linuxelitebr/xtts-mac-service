@@ -24,7 +24,7 @@ bold() { printf "\033[1m%s\033[0m\n" "$*"; }
 FAILED=0
 
 bold "1) Service in launchd"
-if launchctl list | grep -q "$SERVICE_LABEL"; then
+if launchctl list 2>/dev/null | grep -F "$SERVICE_LABEL" >/dev/null; then
     pid=$(launchctl list | awk -v lbl="$SERVICE_LABEL" '$3==lbl {print $1}')
     if [ "$pid" = "-" ] || [ -z "$pid" ]; then
         fail "label $SERVICE_LABEL exists but no PID (process crashed?)"

@@ -19,7 +19,7 @@ if [ ! -f "$PLIST_TARGET" ]; then
     exit 0
 fi
 
-if ! launchctl list | grep -q "$SERVICE_LABEL"; then
+if ! launchctl list 2>/dev/null | grep -F "$SERVICE_LABEL" >/dev/null; then
     ok "already stopped"
     exit 0
 fi
