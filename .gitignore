@@ -1,0 +1,18 @@
+# Logs from the service
+logs/
+*.log
+
+# Plist with absolute paths rendered by install.sh (lives in ~/Library/LaunchAgents)
+com.xtts.tts.local.plist
+
+# Test outputs
+test-output*.wav
+test-output*.mp3
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp

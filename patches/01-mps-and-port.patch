@@ -1,0 +1,47 @@
+--- a/app.py
++++ b/app.py
+@@ -1,17 +1,35 @@
++import os
+ import gradio as gr
+-from TTS.api import TTS
+ import torch
+ 
++# PyTorch 2.6+ flipped the default of torch.load to weights_only=True. The
++# Coqui TTS lib hasn't been updated and its checkpoints fail to load. We
++# trust the official Coqui weights, so default back to weights_only=False
++# globally before importing TTS.
++_orig_torch_load = torch.load
++def _torch_load_compat(*args, **kwargs):
++    kwargs.setdefault("weights_only", False)
++    return _orig_torch_load(*args, **kwargs)
++torch.load = _torch_load_compat
++
++from TTS.api import TTS
++
+ if torch.cuda.is_available():
+     device = "cuda"
+ elif torch.backends.mps.is_available():
+-    device = "cpu"  # mps doesn't work yet
++    device = "mps"
++    # Some Coqui TTS ops don't have an MPS kernel; fall back to CPU silently
++    os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
+ else:
+     device = "cpu"
++print(f"Compute device: {device}")
+ 
+-torch.set_default_device(device)
++# Note: don't call torch.set_default_device(device) here. It would force every
++# tensor allocation to land on the device, including helper ops inside the TTS
++# library that assume CPU. Moving the model alone is enough.
+ tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
+ tts.to(device)
++print(f"Model loaded to {device.upper()}.")
+ 
+ def predict(prompt, language, audio_file_pth, agree):
+     if agree == True:
+@@ -121,4 +139,4 @@
+     description=description,
+     article=article,
+     examples=examples,
+-).queue().launch(debug=True)
++).queue().launch(server_name="127.0.0.1", server_port=7861, debug=True)
